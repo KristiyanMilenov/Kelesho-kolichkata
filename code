@@ -1,0 +1,114 @@
+int trig = 10;
+int echo = 9;
+int motorsRB = 4;
+int motorsRF = 5;
+int motorsLB = 6;
+int motorsLF = 7;
+int motorspeedR = 3;
+int motorspeedL = 8;
+
+void forward(){
+  
+  digitalWrite(motorsRB, LOW);
+  digitalWrite(motorsLB, LOW);
+  analogWrite(motorspeedR, 255*0.65);
+  analogWrite(motorspeedL, 255);
+  digitalWrite(motorsRF, HIGH);
+  digitalWrite(motorsLF, HIGH);  
+  
+}
+
+/*void backward () {
+  
+  digitalWrite(motorsRB, HIGH);
+  digitalWrite(motorsLB, HIGH);
+  digitalWrite(motorspeedR, HIGH);
+  digitalWrite(motorspeedL, HIGH);
+  digitalWrite(motorsRF, LOW);
+  digitalWrite(motorsLF, LOW);
+  
+}*/
+
+void left (){
+
+  digitalWrite(motorsRB, LOW);
+  digitalWrite(motorsLB, HIGH);
+  digitalWrite(motorspeedR, 255*0.65);
+  digitalWrite(motorspeedL, 255);
+  digitalWrite(motorsRF, HIGH);
+  digitalWrite(motorsLF, LOW);  
+
+}
+
+void right (){
+
+  digitalWrite(motorsRB, HIGH);
+  digitalWrite(motorsLB, LOW);
+  analogWrite(motorspeedR, 255*0.65);
+  analogWrite(motorspeedL, 255);
+  digitalWrite(motorsRF, LOW);
+  digitalWrite(motorsLF, HIGH);  
+  
+}
+
+void stp (){
+
+  digitalWrite(motorsRB, LOW);
+  digitalWrite(motorsLB, LOW);
+  analogWrite(motorspeedR, 0);
+  analogWrite(motorspeedL, 0);
+  digitalWrite(motorsRF, LOW);
+  digitalWrite(motorsLF, LOW);  
+
+}
+
+void setup() {
+ pinMode (motorsRB, OUTPUT);
+ pinMode (motorsLB, OUTPUT);
+ pinMode (motorsRF, OUTPUT);
+ pinMode (motorsLF, OUTPUT);
+ pinMode (motorspeedR, OUTPUT);
+ pinMode (motorspeedL, OUTPUT);
+ pinMode (trig, OUTPUT);
+ pinMode (echo, INPUT);
+ Serial.begin (9600);
+
+}
+
+void loop() {
+
+  digitalWrite(trig, LOW);
+  delayMicroseconds (2);
+  long echoReading;
+  digitalWrite(trig, HIGH);
+  delayMicroseconds (10);
+  digitalWrite(trig, LOW);
+  echoReading = pulseIn(echo, HIGH);
+  int distance = echoReading * 0.034 /2;
+  Serial.print("Distance:");
+  Serial.print(distance);
+  Serial.println("cm");
+
+  forward();
+  
+  if(distance>30){
+    
+    forward();
+    
+  }
+  else{
+
+    stp();
+    delay (500);
+    left();
+    delay(350);
+    if(distance<30){
+
+    right();
+    delay(700);
+    }else{
+      forward();
+    }
+  }
+
+}
